@@ -1,0 +1,28 @@
+{
+  "id": "9ae428bb-1a07-471c-b834-6b15599398e9",
+  "name": "Experiments",
+  "publisher": "Default publisher",
+  "version": "1.0.0.0",
+  "brief": "",
+  "description": "",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "22.0.0.0",
+  "idRanges": [
+    {
+      "from": 50000,
+      "to": 99999
+    }
+  ],
+ 
+  "runtime": "7.0",
+  "features": [
+    "NoImplicitWith"
+  ]
+}
