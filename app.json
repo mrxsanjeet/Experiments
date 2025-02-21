@@ -1,7 +1,7 @@
 {
   "id": "9ae428bb-1a07-471c-b834-6b15599398e9",
   "name": "Experiments",
-  "publisher": "Default publisher",
+  "publisher": "SanjeetExperimentsLab",
   "version": "1.0.0.0",
   "brief": "",
   "description": "",
@@ -21,7 +21,7 @@
     }
   ],
  
-  "runtime": "7.0",
+  "runtime": "13.0",
   "features": [
     "NoImplicitWith"
   ]

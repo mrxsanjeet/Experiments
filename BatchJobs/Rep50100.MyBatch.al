@@ -10,9 +10,9 @@ report 50100 "My Batch"
             RequestFilterFields = "Customer Posting Group", "Customer Price Group";
             trigger OnPreDataItem()
             var
-                Fancy: Codeunit FancyCo;
+            //Fancy: Codeunit FancyCo;
             begin
-                Fancy.FancyFunc(Customer);
+                //Fancy.FancyFunc(Customer);
             end;
         }
     }
@@ -34,10 +34,10 @@ report 50100 "My Batch"
         Test: Text;
 }
 
-codeunit 50100 FancyCo
-{
-    procedure FancyFunc(var Cust: Record Customer)
-    begin
-        // Fancy processing
-    end;
-}
+// codeunit 50100 FancyCo
+// {
+//     procedure FancyFunc(var Cust: Record Customer)
+//     begin
+//         // Fancy processing
+//     end;
+// }

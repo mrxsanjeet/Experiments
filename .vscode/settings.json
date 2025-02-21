@@ -1,0 +1,9 @@
+{
+    "al.showHomeAtStartup": "WhenUpdated",
+    "${AppSourceCop}": "Always",
+    "al.codeAnalyzers": [
+        "${analyzerFolder}BusinessCentral.LinterCop.dll"
+    ],
+    "CodeGPT.apiKey": "CodeGPT Plus Beta"
+    
+}
