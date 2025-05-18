@@ -26,6 +26,7 @@ codeunit 70100 "Vendor Payment ZIP Export"
         SetVendorLedgerFilters(VendorLedgerEntry, PostingDate);
         if VendorLedgerEntry.FindSet() then
             repeat
+
                 if Vendor.Get(VendorLedgerEntry."Vendor No.") then
                     if not ProcessedVendors.Contains(Vendor."No.") then begin
                         ProcessedVendors.Add(Vendor."No.");

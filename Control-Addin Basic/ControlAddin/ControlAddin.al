@@ -11,11 +11,11 @@ controladdin DemoD365BCAddin
     HorizontalStretch = true;
     HorizontalShrink = true;
     // Scripts = 'Scripts/main.js';
-    //StyleSheets = 'CSS/stylesheet.css';
-    //StartupScript = 'Scripts/start.js';
-    //RecreateScript = 'recreateScript.js';
-    //RefreshScript = 'refreshScript.js';
-    //Images = 'Images/Avatar.png';
+    // StyleSheets = 'CSS/stylesheet.css';
+    // StartupScript = 'Scripts/start.js';
+    // RecreateScript = 'recreateScript.js';
+    // RefreshScript = 'refreshScript.js';
+    // Images = 'Images/Avatar.png';
 
     event ControlReady()
 

@@ -54,8 +54,8 @@ pageextension 50144 "JSON" extends "Sales Order"
                         end;
                     end;
 
-                    //obj.WriteTo(txt);
-                    //Message(txt);
+                    obj.WriteTo(txt);
+                    Message(txt);
                 end;
             }
             action(OpenInOneDrive)

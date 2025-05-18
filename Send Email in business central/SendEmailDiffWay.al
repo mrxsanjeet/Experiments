@@ -29,6 +29,8 @@ codeunit 60168 SendEmailDiffBC
         Report.SaveAs(Report::"Standard Sales - Invoice", ReportParameters, ReportFormat::Pdf, OutStr);
         TempBlob.CreateInStream(InStr);
 
+
+
         EmailMessage.Create('your email goes here', 'This is the subject', 'This is the body');
         EmailMessage.AddAttachment('FileName.pdf', 'PDF', InStr);
         Email.Send(EmailMessage, Enum::"Email Scenario"::Default);

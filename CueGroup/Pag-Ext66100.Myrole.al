@@ -1,4 +1,4 @@
-/*
+
 pageextension 66100 "My role" extends "Business Manager Role Center"
 {
     layout
@@ -12,4 +12,3 @@ pageextension 66100 "My role" extends "Business Manager Role Center"
         }
     }
 }
-*/

@@ -9,14 +9,14 @@ pageextension 50500 "Our own headline" extends "Headline RC Business Manager"
                 ApplicationArea = All;
                 trigger OnDrillDown()
                 begin
-                    Hyperlink('https://www.hougaard.com');
+                    Hyperlink('https://www.youtube.com');
                 end;
             }
         }
     }
     trigger OnOpenPage()
     begin
-        HeadlineTxt := 'Hello <emphasize>User!</emphasize> from youtube';
+        HeadlineTxt := 'Hello <emphasize>Sanjeet!</emphasize> from AAVYA';
     end;
 
     var

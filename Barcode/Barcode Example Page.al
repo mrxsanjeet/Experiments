@@ -2,7 +2,7 @@ page 80101 "Barcode Example Page"
 {
     PageType = Card;
     SourceTable = "Barcode Example";
-    //ApplicationArea = All;
+    ApplicationArea = All;
 
     layout
     {
