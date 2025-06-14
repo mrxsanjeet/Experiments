@@ -46,10 +46,5 @@ codeunit 60101 BlobStorageManagement
                 //BlobClient.GetBlobAsFile()
                 until ContainerContent.Next() = 0;
         end;
-
-
     end;
-
-
-
 }

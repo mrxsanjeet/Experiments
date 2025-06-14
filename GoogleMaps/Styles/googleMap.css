@@ -1,0 +1,207 @@
+/* Google Maps Control Add-in Styles for Business Central */
+
+/* Main map container */
+#map {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f5f5f5;
+}
+
+/* Control add-in container */
+#controlAddIn {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #d1d1d1;
+    border-radius: 4px;
+}
+
+/* Custom info window styles */
+.gm-style-iw {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.gm-style-iw-d {
+    overflow: hidden !important;
+}
+
+/* Custom marker info content */
+.marker-info {
+    padding: 8px;
+    max-width: 250px;
+}
+
+.marker-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.marker-info p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Loading indicator */
+.map-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #f9f9f9;
+    color: #666;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+.map-loading::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-top: 2px solid #0078d4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error message styles */
+.map-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #fff2f2;
+    color: #d13438;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+/* Custom controls styling */
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 8px;
+}
+
+.map-control-button {
+    background: #0078d4;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.map-control-button:hover {
+    background: #106ebe;
+}
+
+.map-control-button:active {
+    background: #005a9e;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .marker-info {
+        max-width: 200px;
+    }
+    
+    .map-controls {
+        top: 5px;
+        right: 5px;
+        padding: 4px;
+    }
+    
+    .map-control-button {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+
+/* High DPI display support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    #map {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Focus styles for accessibility */
+.map-control-button:focus {
+    outline: 2px solid #005a9e;
+    outline-offset: 2px;
+}
+
+/* Custom marker styles (if using custom markers) */
+.custom-marker {
+    background-color: #0078d4;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.custom-marker:hover {
+    background-color: #106ebe;
+    transform: scale(1.1);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Info window close button styling */
+.gm-ui-hover-effect {
+    opacity: 0.6;
+}
+
+.gm-ui-hover-effect:hover {
+    opacity: 1;
+}
+
+/* Street View control styling */
+.gm-svpc {
+    background-color: #ffffff !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Zoom control styling */
+.gm-bundled-control {
+    background-color: #ffffff !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Map type control styling */
+.gm-style-mtc {
+    background-color: #ffffff !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}

@@ -1,4 +1,4 @@
-page 60001 Nexer_Field_Viewer
+page 60003 "Sanjeet Field Viewer"
 {
     Caption = 'Sanjeet Field Viewer';
     PageType = List;
@@ -103,15 +103,40 @@ page 60001 Nexer_Field_Viewer
     }
     actions
     {
-        // area(Processing)
-        // {
-        //     action(ActionName)
-        //     {
-        //         trigger OnAction()
-        //         begin
-        //         end;
-        //     }
-        // }
+        area(Processing)
+        {
+            action("WhereUsedField")
+            {
+                ApplicationArea = All;
+                Caption = 'Where Used Analysis';
+                ToolTip = 'Analyze where this field is used throughout the system';
+                Image = Find;
+
+                trigger OnAction()
+                begin
+                    Message('WHERE USED ANALYSIS FOR FIELD\n\nField: %1.%2 (%3)\nTable: %4\n\nThis feature would analyze:\n- Pages using this field\n- Reports displaying this field\n- Codeunits referencing this field\n- Table relations involving this field\n\nImplementation: Use Symbol References API or parse AL source code for field usage patterns.',
+                        Rec.TableNo, Rec."No.", Rec.FieldName, Rec.TableName);
+                end;
+            }
+
+            action("RunTable")
+            {
+                ApplicationArea = All;
+                Caption = 'Run Table';
+                ToolTip = 'Run the table containing this field';
+                Image = Table;
+
+                trigger OnAction()
+                var
+                    RecVar: Variant;
+                    RecRef: RecordRef;
+                begin
+                    RecRef.Open(Rec.TableNo);
+                    RecVar := RecRef;
+                    Page.Run(0, RecVar);
+                end;
+            }
+        }
     }
     trigger OnOpenPage()
     var

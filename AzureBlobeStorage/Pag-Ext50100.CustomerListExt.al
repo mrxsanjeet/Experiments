@@ -2,8 +2,8 @@
 // Remember that object names and IDs should be unique across all extensions.
 // AL snippets start with t*, like tpageext - give them a try and happy coding!
 //Runtime ok at 8.00
-/*
-pageextension 50100 CustomerListExt extends "Customer List"
+
+pageextension 50900 CustomerListExt extends "Customer List"
 {
     trigger OnOpenPage();
     var
@@ -46,4 +46,3 @@ pageextension 50100 CustomerListExt extends "Customer List"
         Authorization: Interface "Storage Service Authorization";
 
 }
-*/

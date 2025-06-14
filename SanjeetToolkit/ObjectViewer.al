@@ -1,4 +1,4 @@
-page 60000 Nexer_Object_Viewer
+page 60000 "Sanjeet Object Viewer"
 {
     Caption = 'Sanjeet Object Viewer';
     PageType = List;
@@ -6,11 +6,17 @@ page 60000 Nexer_Object_Viewer
     UsageCategory = Administration;
     SourceTable = AllObjWithCaption;
     LinksAllowed = false;
+    Editable = false;
+    InsertAllowed = false;
+    DeleteAllowed = false;
+    ModifyAllowed = false;
 
     layout
     {
         area(Content)
         {
+
+
             repeater(General)
             {
                 field("Object Type"; Rec."Object Type")
@@ -33,23 +39,6 @@ page 60000 Nexer_Object_Viewer
                 {
                     ApplicationArea = All;
                 }
-                field(NoOfFields; NoOfFields)
-                {
-                    ApplicationArea = All;
-                    Lookup = true;
-                    DrillDown = true;
-                    Editable = false;
-
-                    trigger OnDrillDown()
-                    var
-                        FieldRec: Record Field;
-                    begin
-                        if (Rec."Object Type" <> Rec."Object Type"::Table) then Error('Object Type must be Table');
-                        FieldRec.Reset;
-                        FieldRec.SetRange(TableNo, Rec."Object ID");
-                        Page.Run(Page::Nexer_Field_Viewer, FieldRec);
-                    end;
-                }
                 field(NoOfRealFields; NoOfRealFields)
                 {
                     ApplicationArea = All;
@@ -65,7 +54,7 @@ page 60000 Nexer_Object_Viewer
                         FieldRec.Reset;
                         FieldRec.SetRange(Class, FieldRec.Class::Normal);
                         FieldRec.SetRange(TableNo, Rec."Object ID");
-                        Page.Run(Page::Nexer_Field_Viewer, FieldRec);
+                        Page.Run(60003, FieldRec);
                     end;
                 }
                 field(NoOfStandardFields; NoOfStandardFields)
@@ -83,7 +72,7 @@ page 60000 Nexer_Object_Viewer
                         FieldRec.Reset;
                         FieldRec.SetRange("App Package ID", Rec."App Package ID");
                         FieldRec.SetRange(TableNo, Rec."Object ID");
-                        Page.Run(Page::Nexer_Field_Viewer, FieldRec);
+                        Page.Run(60003, FieldRec);
                     end;
                 }
                 field(NoOfExtensionFields; NoOfExtensionFields)
@@ -101,7 +90,7 @@ page 60000 Nexer_Object_Viewer
                         FieldRec.Reset;
                         FieldRec.SetFilter("App Package ID", '<>%1', Rec."App Package ID");
                         FieldRec.SetRange(TableNo, Rec."Object ID");
-                        Page.Run(Page::Nexer_Field_Viewer, FieldRec);
+                        Page.Run(60003, FieldRec);
                     end;
                 }
                 field(ExtensionName; ExtensionName)
@@ -157,26 +146,23 @@ page 60000 Nexer_Object_Viewer
                     RecVar: Variant;
                     RecRef: RecordRef;
                 begin
-                    if (Rec."Object Type" = Rec."Object Type"::Table) then begin
-                        RecRef.Open(Rec."Object ID");
-                        RecVar := RecRef;
-                        Page.Run(0, RecVar);
-                    end;
-                    if (Rec."Object Type" = Rec."Object Type"::Page) then begin
-                        Page.Run(Rec."Object ID");
-                        exit;
-                    end;
-                    if (Rec."Object Type" = Rec."Object Type"::Report) then begin
-                        Report.Run(Rec."Object ID");
-                        exit;
-                    end;
-                    if (Rec."Object Type" = Rec."Object Type"::XMLport) then begin
-                        Xmlport.Run(Rec."Object ID");
-                        exit;
-                    end;
-                    if (Rec."Object Type" = Rec."Object Type"::Codeunit) then begin
-                        Codeunit.Run(Rec."Object ID");
-                        exit;
+                    case Rec."Object Type" of
+                        Rec."Object Type"::Table:
+                            begin
+                                RecRef.Open(Rec."Object ID");
+                                RecVar := RecRef;
+                                Page.Run(0, RecVar);
+                            end;
+                        Rec."Object Type"::Page:
+                            Page.Run(Rec."Object ID");
+                        Rec."Object Type"::Report:
+                            Report.Run(Rec."Object ID");
+                        Rec."Object Type"::XMLport:
+                            Xmlport.Run(Rec."Object ID");
+                        Rec."Object Type"::Codeunit:
+                            Codeunit.Run(Rec."Object ID");
+                        else
+                            Message('Cannot run object type: %1', Rec."Object Type");
                     end;
                 end;
             }
@@ -191,7 +177,29 @@ page 60000 Nexer_Object_Viewer
                     if (Rec."Object Type" <> Rec."Object Type"::Table) then Error('Object Type must be Table');
                     FieldRec.Reset;
                     FieldRec.SetRange(TableNo, Rec."Object ID");
-                    Page.Run(Page::Nexer_Field_Viewer, FieldRec);
+                    Page.Run(60003, FieldRec);
+                end;
+            }
+
+            action("ViewTableData")
+            {
+                ApplicationArea = All;
+                Caption = 'View Table Data';
+                ToolTip = 'View all fields and values for the selected table';
+                Image = Database;
+                Enabled = Rec."Object Type" = Rec."Object Type"::Table;
+
+                trigger OnAction()
+                var
+                    TableDataViewer: Page "Sanjeet Table Data Viewer";
+                begin
+                    if Rec."Object Type" <> Rec."Object Type"::Table then begin
+                        Message('This action is only available for Table objects.');
+                        exit;
+                    end;
+
+                    TableDataViewer.SetTableID(Rec."Object ID");
+                    TableDataViewer.Run();
                 end;
             }
             action("Log Telemetry")
@@ -210,7 +218,6 @@ page 60000 Nexer_Object_Viewer
         }
     }
     trigger OnOpenPage()
-    var
     begin
         Rec.SetRange("Object Type", Rec."Object Type"::Table);
     end;

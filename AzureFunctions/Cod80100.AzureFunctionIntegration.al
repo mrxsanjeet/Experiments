@@ -1,49 +1,242 @@
-/*
-codeunit 80100 "AzureFunctionIntegration"
-{
-    var
-        HttpClient: DotNet HttpClient;
-        Response: DotNet System.Net.Http.HttpResponseMessage;
-        Content: DotNet System.Net.Http.HttpContent;
-        Stream: DotNet System.IO.Stream;
-        StreamReader: DotNet System.IO.StreamReader;
-        AzureFunctionUrl: Text[250];
 
-    procedure CallAzureFunction();
+codeunit 50700 "AzureFunctionIntegration"
+{
+    procedure CallAzureFunction()
+    var
+        HttpClient: HttpClient;
+        RequestMessage: HttpRequestMessage;
+        ResponseMessage: HttpResponseMessage;
+        RequestHeaders: HttpHeaders;
+        ResponseText: Text;
+        AzureFunctionUrl: Text;
     begin
-        // Replace 'YourAzureFunctionUrl' with the actual URL of your Azure function
+        // Replace with your actual Azure Function URL
         AzureFunctionUrl := 'https://yourfunctionapp.azurewebsites.net/api/YourFunction';
 
-        // Initialize the HttpClient
-        HttpClient := HttpClient.HttpClient;
+        // Set up the HTTP request
+        RequestMessage.SetRequestUri(AzureFunctionUrl);
+        RequestMessage.Method('GET');
+        RequestMessage.GetHeaders(RequestHeaders);
+        RequestHeaders.Add('Accept', 'application/json');
 
-        // Prepare the request
-        HttpClient.BaseAddress := Uri.Uri(AzureFunctionUrl);
-        HttpClient.DefaultRequestHeaders.Clear();
-        HttpClient.DefaultRequestHeaders.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.MediaTypeWithQualityHeaderValue('application/json'));
+        // Send the request
+        if HttpClient.Send(RequestMessage, ResponseMessage) then begin
+            ResponseMessage.Content.ReadAs(ResponseText);
+            if ResponseMessage.IsSuccessStatusCode then begin
+                Message('Azure Function Response: %1', ResponseText);
+            end else begin
+                Error('Error calling Azure function. Status code: %1, Response: %2', ResponseMessage.HttpStatusCode, ResponseText);
+            end;
+        end else begin
+            Error('Failed to send HTTP request to Azure Function');
+        end;
+    end;
 
-        // Make an HTTP GET request (you can change it to POST or other methods as needed)
-        Response := HttpClient.GetAsync(HttpClient.BaseAddress).Result;
+    procedure CallAzureFunctionWithAuth(FunctionUrl: Text; FunctionKey: Text)
+    var
+        HttpClient: HttpClient;
+        RequestMessage: HttpRequestMessage;
+        ResponseMessage: HttpResponseMessage;
+        RequestHeaders: HttpHeaders;
+        ResponseText: Text;
+    begin
+        // Set up the HTTP request with function key authentication
+        RequestMessage.SetRequestUri(FunctionUrl);
+        RequestMessage.Method('GET');
+        RequestMessage.GetHeaders(RequestHeaders);
+        RequestHeaders.Add('Accept', 'application/json');
+        RequestHeaders.Add('x-functions-key', FunctionKey);
 
-        // Check if the request was successful (status code 200)
-        if Response.IsSuccessStatusCode then
-        begin
-            // Get the response content
-            Content := Response.Content;
+        // Send the request
+        if HttpClient.Send(RequestMessage, ResponseMessage) then begin
+            ResponseMessage.Content.ReadAs(ResponseText);
+            if ResponseMessage.IsSuccessStatusCode then begin
+                Message('Azure Function Response: %1', ResponseText);
+            end else begin
+                Error('Error calling Azure function. Status code: %1, Response: %2', ResponseMessage.HttpStatusCode, ResponseText);
+            end;
+        end else begin
+            Error('Failed to send HTTP request to Azure Function');
+        end;
+    end;
 
-            // Read the response content as a stream
-            Stream := Content.ReadAsStreamAsync().Result;
+    procedure CallAzureFunctionPOST(FunctionUrl: Text; FunctionKey: Text; RequestBody: Text): Text
+    var
+        HttpClient: HttpClient;
+        RequestMessage: HttpRequestMessage;
+        ResponseMessage: HttpResponseMessage;
+        RequestHeaders: HttpHeaders;
+        ContentHeaders: HttpHeaders;
+        HttpContent: HttpContent;
+        ResponseText: Text;
+    begin
+        // Set up the HTTP POST request
+        RequestMessage.SetRequestUri(FunctionUrl);
+        RequestMessage.Method('POST');
+        RequestMessage.GetHeaders(RequestHeaders);
+        RequestHeaders.Add('Accept', 'application/json');
 
-            // Read the stream using a StreamReader
-            StreamReader := System.IO.StreamReader.StreamReader(Stream);
+        // Add function key authentication
+        if FunctionKey <> '' then
+            RequestHeaders.Add('x-functions-key', FunctionKey);
 
-            // Read the content as text
-            Message('Azure Function Response: %1', StreamReader.ReadToEnd());
-        end
-        else
-        begin
-            // Handle the error (e.g., log or throw an exception)
-            Error('Error calling Azure function. Status code: %1', Response.StatusCode);
+        // Set request body
+        if RequestBody <> '' then begin
+            HttpContent.WriteFrom(RequestBody);
+            HttpContent.GetHeaders(ContentHeaders);
+            ContentHeaders.Remove('Content-Type');
+            ContentHeaders.Add('Content-Type', 'application/json');
+            RequestMessage.Content(HttpContent);
+        end;
+
+        // Send the request
+        if HttpClient.Send(RequestMessage, ResponseMessage) then begin
+            ResponseMessage.Content.ReadAs(ResponseText);
+            if ResponseMessage.IsSuccessStatusCode then begin
+                exit(ResponseText);
+            end else begin
+                Error('Error calling Azure function. Status code: %1, Response: %2', ResponseMessage.HttpStatusCode, ResponseText);
+            end;
+        end else begin
+            Error('Failed to send HTTP request to Azure Function');
+        end;
+    end;
+
+    procedure CallAzureFunctionWithQuery(FunctionUrl: Text; FunctionKey: Text; QueryParams: Dictionary of [Text, Text]): Text
+    var
+        HttpClient: HttpClient;
+        RequestMessage: HttpRequestMessage;
+        ResponseMessage: HttpResponseMessage;
+        RequestHeaders: HttpHeaders;
+        ResponseText: Text;
+        FullUrl: Text;
+        QueryString: Text;
+        ParamKey: Text;
+        FirstParam: Boolean;
+    begin
+        FullUrl := FunctionUrl;
+        FirstParam := true;
+
+        // Build query string
+        foreach ParamKey in QueryParams.Keys do begin
+            if FirstParam then begin
+                QueryString := '?';
+                FirstParam := false;
+            end else begin
+                QueryString += '&';
+            end;
+            QueryString += ParamKey + '=' + QueryParams.Get(ParamKey);
+        end;
+
+        FullUrl += QueryString;
+
+        // Set up the HTTP request
+        RequestMessage.SetRequestUri(FullUrl);
+        RequestMessage.Method('GET');
+        RequestMessage.GetHeaders(RequestHeaders);
+        RequestHeaders.Add('Accept', 'application/json');
+
+        // Add function key authentication
+        if FunctionKey <> '' then
+            RequestHeaders.Add('x-functions-key', FunctionKey);
+
+        // Send the request
+        if HttpClient.Send(RequestMessage, ResponseMessage) then begin
+            ResponseMessage.Content.ReadAs(ResponseText);
+            if ResponseMessage.IsSuccessStatusCode then begin
+                exit(ResponseText);
+            end else begin
+                Error('Error calling Azure function. Status code: %1, Response: %2', ResponseMessage.HttpStatusCode, ResponseText);
+            end;
+        end else begin
+            Error('Failed to send HTTP request to Azure Function');
+        end;
+    end;
+
+    procedure CallQRGeneratorFunction(CustomerNo: Code[20]; URL: Text): Boolean
+    var
+        FunctionUrl: Text;
+        FunctionKey: Text;
+        RequestBody: Text;
+        ResponseText: Text;
+        TempBlob: Codeunit "Temp Blob";
+        Base64Convert: Codeunit "Base64 Convert";
+        InStream: InStream;
+        OutStream: OutStream;
+        JsonResponse: JsonObject;
+        JsonToken: JsonToken;
+        Base64Data: Text;
+        FileName: Text;
+    begin
+        // Configure your QR Generator function
+        FunctionUrl := 'https://sdqrcodegenerator.azurewebsites.net/api/QRGenerator';
+        FunctionKey := 'YOUR_FUNCTION_KEY_HERE';
+
+        // Prepare JSON request body
+        RequestBody := '{"url": "' + URL + '"}';
+
+        // Call the Azure Function
+        ResponseText := CallAzureFunctionPOST(FunctionUrl, FunctionKey, RequestBody);
+
+        if ResponseText <> '' then begin
+            // If the response contains base64 image data, process it
+            if JsonResponse.ReadFrom(ResponseText) then begin
+                if JsonResponse.Get('imageData', JsonToken) then begin
+                    Base64Data := JsonToken.AsValue().AsText();
+
+                    // Convert base64 to stream and download
+                    TempBlob.CreateOutStream(OutStream);
+                    Base64Convert.FromBase64(Base64Data, OutStream);
+                    TempBlob.CreateInStream(InStream);
+
+                    FileName := CustomerNo + '_QRCode.jpg';
+                    DownloadFromStream(InStream, 'QR Code', '', '', FileName);
+                    exit(true);
+                end;
+            end else begin
+                // If response is direct binary data, treat as base64
+                TempBlob.CreateOutStream(OutStream);
+                Base64Convert.FromBase64(ResponseText, OutStream);
+                TempBlob.CreateInStream(InStream);
+
+                FileName := CustomerNo + '_QRCode.jpg';
+                DownloadFromStream(InStream, 'QR Code', '', '', FileName);
+                exit(true);
+            end;
+        end;
+
+        exit(false);
+    end;
+
+    procedure TestAzureFunctionConnection(FunctionUrl: Text; FunctionKey: Text): Boolean
+    var
+        HttpClient: HttpClient;
+        RequestMessage: HttpRequestMessage;
+        ResponseMessage: HttpResponseMessage;
+        RequestHeaders: HttpHeaders;
+        ResponseText: Text;
+    begin
+        // Test connection to Azure Function
+        RequestMessage.SetRequestUri(FunctionUrl);
+        RequestMessage.Method('GET');
+        RequestMessage.GetHeaders(RequestHeaders);
+        RequestHeaders.Add('Accept', 'application/json');
+
+        if FunctionKey <> '' then
+            RequestHeaders.Add('x-functions-key', FunctionKey);
+
+        if HttpClient.Send(RequestMessage, ResponseMessage) then begin
+            ResponseMessage.Content.ReadAs(ResponseText);
+            if ResponseMessage.IsSuccessStatusCode then begin
+                Message('Connection successful! Response: %1', ResponseText);
+                exit(true);
+            end else begin
+                Message('Connection failed. Status: %1, Response: %2', ResponseMessage.HttpStatusCode, ResponseText);
+                exit(false);
+            end;
+        end else begin
+            Message('Failed to connect to Azure Function');
+            exit(false);
         end;
     end;
 
@@ -54,4 +247,3 @@ codeunit 80100 "AzureFunctionIntegration"
     end;
 }
 
-*/
