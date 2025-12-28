@@ -163,11 +163,11 @@ codeunit 70200 "Customer API Integration"
     local procedure GetNextCustomerNo(): Code[20]
     var
         Customer: Record Customer;
-        NoSeriesMgt: Codeunit NoSeriesManagement;
+        // NoSeriesMgt: Codeunit NoSeriesManagement;
         SalesSetup: Record "Sales & Receivables Setup";
     begin
         SalesSetup.Get();
-        exit(NoSeriesMgt.GetNextNo(SalesSetup."Customer Nos.", WorkDate(), true));
+        // exit(NoSeriesMgt.GetNextNo(SalesSetup."Customer Nos.", WorkDate(), true));
     end;
 
     local procedure LogError(ErrorMessage: Text)

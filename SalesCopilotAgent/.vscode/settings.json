@@ -1,0 +1,12 @@
+{
+  "al.enableCodeAnalysis": true,
+  "al.codeAnalyzers": [
+    "${CodeCop}",
+    "${UICop}",
+    "${PerTenantExtensionCop}"
+  ],
+  "al.enableCodeActions": true,
+  "al.incrementalBuild": true,
+  "editor.formatOnSave": true
+}
+

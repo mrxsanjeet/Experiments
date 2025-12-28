@@ -3,7 +3,10 @@
     "${AppSourceCop}": "Always",
     "al.codeAnalyzers": [
         "${CodeCop}",
-        "${PerTenantExtensionCop}"
+        "${UICop}",
+        "${PerTenantExtensionCop}",
+        "${AppSourceCop}",
+        "${analyzerFolder}BusinessCentral.LinterCop.dll"
     ],
     "CodeGPT.apiKey": "CodeGPT Plus Beta"
     

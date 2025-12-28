@@ -46,7 +46,7 @@ page 50132 "Test Chart"
                             end;
                         until Customer.Next() = 0;
 
-                    Buffer.Update(CurrPage.Chart);
+                    // Buffer.Update(CurrPage.Chart);
                 end;
             }
         }

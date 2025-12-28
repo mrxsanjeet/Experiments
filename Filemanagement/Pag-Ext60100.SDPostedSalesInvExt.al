@@ -41,9 +41,9 @@ pageextension 60100 "SD_PostedSalesInvExt" extends "Posted Sales Invoice"
 
                 trigger OnAction()
                 var
-                    BlobStorageMgt: Codeunit BlobStorageManagement;
+                //BlobStorageMgt: Codeunit BlobStorageManagement;
                 begin
-                    BlobStorageMgt.Run()
+                    //BlobStorageMgt.Run()
                 end;
             }
         }
